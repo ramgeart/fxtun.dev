@@ -61,6 +61,7 @@ Deploy the server on any VPS, point a wildcard DNS record at it, and your team i
 - **User Management** — Registration with invite codes, TOTP two-factor authentication, scoped API tokens
 - **Desktop GUI Client** — Cross-platform Wails-based app (Linux, macOS, Windows) with system tray support
 - **CLI Client** — Lightweight command-line client with YAML config and auto-reconnect
+- **Node.js SDK** — Official SDK for programmatically managing tunnels from Node.js applications
 - **Stream Multiplexing** — Efficient [yamux](https://github.com/hashicorp/yamux)-based multiplexed connections over a single TCP link
 - **Docker Ready** — Official container image on GitHub Container Registry
 - **Security** — Interstitial warning pages for untrusted tunnel traffic, TLS termination via nginx, token-scoped permissions
@@ -236,6 +237,37 @@ export FXTUNNEL_AUTH_JWT_SECRET="your-secret"
 export FXTUNNEL_SERVER_CONTROL_PORT=4443
 export FXTUNNEL_DATABASE_PATH="./data/fxtunnel.db"
 ```
+
+## Node.js SDK
+
+Use the official Node.js SDK to programmatically manage tunnels from your applications:
+
+```bash
+npm install @fxtunnel/sdk
+```
+
+```javascript
+const { FxTunnelClient, TunnelType } = require('@fxtunnel/sdk');
+
+const client = new FxTunnelClient({
+  server: {
+    address: 'tunnel.example.com:4443',
+    token: 'sk_your_token',
+  },
+});
+
+await client.connect();
+
+const tunnel = await client.createTunnel({
+  type: TunnelType.HTTP,
+  localPort: 3000,
+  subdomain: 'myapp',
+});
+
+console.log(`Tunnel URL: ${tunnel.url}`);
+```
+
+Full documentation and examples: [sdk/node/README.md](sdk/node/README.md)
 
 ## Nginx + SSL
 
